@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, screen } from '@testing-library/react';
+import { getByTestId, render, screen, act } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import ContactForm from './ContactForm';
 
@@ -8,7 +8,7 @@ test('Contact form renders without errors', () => {
 
 });
 
-test('user can fill out and submit the form', () => {
+test('user can fill out and submit the form', async () => {
   render(<ContactForm />);
 
   //query for each input field with RTL matchers
@@ -22,11 +22,17 @@ test('user can fill out and submit the form', () => {
   userEvent.type(lastNameInput, 'Burke');
   userEvent.type(emailInput, 'bluebill1049@hotmail.com');
   userEvent.type(messageInput, 'message');
+  screen.debug()
 
   //click the button
-  //userEvent.click(button);
+  await act(async () => {
+      const button = screen.getByTestId('submit');
+      await userEvent.click(button);
+  })
+  
+  screen.debug()
 
   //assert that the new person added is now on the page
-  // const edd = screen.getByText(/edd/i);
-  // expect(edd).toBeInTheDocument();
+  const edd = screen.getByText(/edd/i);
+  expect(edd).toBeInTheDocument();
 })
